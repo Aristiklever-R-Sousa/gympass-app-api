@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs'
 import { z } from "zod"
 
 import { prisma } from "@/lib/prisma"
+import { registerUseCase } from "@/use-cases/registerUseCase"
 
 export async function register(req: Request, res: Response) {
   const registerBodySchema = z.object({
@@ -13,27 +14,18 @@ export async function register(req: Request, res: Response) {
 
   const { name, email, password } = registerBodySchema.parse(req.body)
 
-  const userWithSameEmail = await prisma.user.findUnique({
-    where: {
-      email
-    }
-  })
+  try {
+    const userCreated = await registerUseCase({
+      name,
+      email,
+      password
+    })
 
-  if (userWithSameEmail) {
+    return res.status(201).send({
+      data: userCreated,
+    })
+  } catch (err) {
     return res.status(409).send()
   }
 
-  const password_hash = await hash(password, 6);
-
-  const userCreated = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password_hash
-    }
-  })
-
-  return res.status(201).send({
-    data: userCreated,
-  })
 }
