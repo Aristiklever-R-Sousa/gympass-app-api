@@ -3,7 +3,8 @@ import { hash } from 'bcryptjs'
 import { z } from "zod"
 
 import { prisma } from "@/lib/prisma"
-import { registerUseCase } from "@/use-cases/registerUseCase"
+import { RegisterUseCase } from "@/use-cases/registerUseCase"
+import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository"
 
 export async function register(req: Request, res: Response) {
   const registerBodySchema = z.object({
@@ -15,7 +16,10 @@ export async function register(req: Request, res: Response) {
   const { name, email, password } = registerBodySchema.parse(req.body)
 
   try {
-    const userCreated = await registerUseCase({
+    const usersRepository = new PrismaUsersRepository()
+    const registerUseCase = new RegisterUseCase(usersRepository)
+
+    const userCreated = await registerUseCase.execute({
       name,
       email,
       password
