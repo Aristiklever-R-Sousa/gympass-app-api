@@ -24,6 +24,14 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
         return checkInOnSameDate
     }
 
+    async countByUserId(userId: string) {
+        const checkInsCount = this.checkIns
+            .filter(checkIn => checkIn.user_id === userId)
+            .length
+
+        return checkInsCount
+    }
+
     async findManyByUserId(userId: string, page: number) {
         const perPage = 20;
         const endItemIndex = perPage * page;
