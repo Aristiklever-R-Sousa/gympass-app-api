@@ -15,6 +15,17 @@ export class InMemoryGymsRepository implements GymsRepository {
         return gym
     }
 
+    async findManyByTitle(title: string, page: number) {
+        const perPage = 20;
+        const endItemIndex = perPage * page;
+        const startItemIndex = endItemIndex - perPage;
+
+        const gyms = this.gyms.filter((gym) => gym.title.includes(title))
+            .slice(startItemIndex, endItemIndex)
+
+        return gyms
+    }
+
     async create(data: Prisma.GymCreateInput) {
 
         const gym = {
