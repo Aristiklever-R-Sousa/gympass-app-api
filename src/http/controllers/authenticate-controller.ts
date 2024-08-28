@@ -17,9 +17,19 @@ export async function authenticate(req: Request, res: Response) {
         const usersRepository = new PrismaUsersRepository()
         const authenticateUseCase = new AuthenticateUseCase(usersRepository)
 
-        await authenticateUseCase.execute({
+        const { user } = await authenticateUseCase.execute({
             email,
             password
+        })
+
+        const token = await res.jwtSign({}, {
+            sign: {
+                sub: user.id
+            }
+        })
+
+        return res.status(200).send({
+            token
         })
 
     } catch (err) {
@@ -29,7 +39,5 @@ export async function authenticate(req: Request, res: Response) {
 
         throw err
     }
-
-    return res.status(200).send()
 
 }
