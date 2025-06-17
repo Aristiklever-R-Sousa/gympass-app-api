@@ -1,10 +1,3 @@
-// import { expect, test } from "vitest";
-
-// test('testing', () => {
-//     expect(1 + 1).toEqual(2)
-// })
-
-
 import { app } from "@/app";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, } from "vitest";
