@@ -20,7 +20,7 @@ export async function create(req: Request, res: Response) {
 
     const createGymUseCase = makeCreateGymUseCase()
 
-    const dataCreated = await createGymUseCase.execute({
+    const { gym } = await createGymUseCase.execute({
         title,
         description,
         phone,
@@ -29,7 +29,7 @@ export async function create(req: Request, res: Response) {
     })
 
     return res.status(201).send({
-        data: dataCreated,
+        gym,
     })
 
 }
