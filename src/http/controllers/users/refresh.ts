@@ -5,18 +5,30 @@ export async function refresh(req: Request, res: Response) {
         onlyCookie: true
     })
 
-    const token = await res.jwtSign({}, {
-        sign: {
-            sub: req.user.sub
-        }
-    })
+    const { role, sub } = req.user
 
-    const refreshToken = await res.jwtSign({}, {
-        sign: {
-            sub: req.user.sub,
-            expiresIn: '7d',
+    const token = await res.jwtSign(
+        {
+            role
         },
-    })
+        {
+            sign: {
+                sub
+            }
+        }
+    )
+
+    const refreshToken = await res.jwtSign(
+        {
+            role
+        },
+        {
+            sign: {
+                sub,
+                expiresIn: '7d',
+            },
+        }
+    )
 
     return res
         .setCookie('refreshToken', refreshToken, {

@@ -15,7 +15,7 @@ describe("Validate Check-in (e2e)", () => {
     })
 
     it('should be able to validate a check-in', async () => {
-        const { token } = await createAndAuthenticateUser(app)
+        const { token } = await createAndAuthenticateUser(app, true)
 
         const responseGym = await request(app.server)
             .post('/gyms')
@@ -43,10 +43,7 @@ describe("Validate Check-in (e2e)", () => {
         const response = await request(app.server)
             .patch(`/check-ins/${checkIn.id}/validate`)
             .auth(token, { type: 'bearer' })
-            .send({
-                latitude: -3.5220479,
-                longitude: -40.3502656,
-            })
+            .send()
 
         expect(response.statusCode).toEqual(204)
 
